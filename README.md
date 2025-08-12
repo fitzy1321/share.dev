@@ -12,10 +12,11 @@ Built using Golang + HTMX!
 - "Feed" Page
 - Post Text
 
-## Dev Notes:
+## Dev Notes
 
 Using Air for live reloading.  
-Install air: `go install github.com/air-verse/air@latest`
+Install air: `go install github.com/air-verse/air@latest`.  
+_Note_: GOPATH (i.e. where go install will place your package, usually `$Home/go/bin`) must be in your $PATH  
 
 ## References
 
