@@ -29,3 +29,4 @@ Run app locally: `air`
 - Primeagon talk on golang and htmx: <https://www.youtube.com/watch?v=x7v6SNIgJpE>
 - Air github page: <https://github.com/air-verse/air>
 - Supabase-go package: <https://github.com/supabase-community/supabase-go>
+- Local Development with Supabase <https://supabase.com/docs/guides/local-development>
