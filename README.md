@@ -22,7 +22,14 @@ Using Air for live reloading.
 Install air: `go install github.com/air-verse/air@latest`.  
 _Note_: GOPATH (i.e. where go install will place your package, usually `$Home/go/bin`) must be in your $PATH  
 
-Run app locally: `air`
+Supabase cli: `brew install supabase/tap/supabase`
+
+Run app locally with supabase
+
+```sh
+supabase start
+air # live reload go files, templates, and html
+```
 
 ## References
 
