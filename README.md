@@ -4,6 +4,15 @@ A nonsense Social Media clone.
 
 Built using Golang + HTMX!
 
+## Full Tech Stack
+
+- Golang
+  - Builtin http server
+- Templ
+- Air (hot reloading)
+- HTMX
+- Bulma CSS
+
 ## Current Scope
 
 - Decent Homepage
