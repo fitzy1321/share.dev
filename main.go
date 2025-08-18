@@ -7,10 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/fitzy1321/share.dev/handlers"
-
 	"github.com/joho/godotenv"
 	"github.com/supabase-community/supabase-go"
+	"share.dev/handlers"
 )
 
 // func initSupaClient(envs map[string]string) *supabase.Client {

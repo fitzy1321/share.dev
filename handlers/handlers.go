@@ -3,9 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/fitzy1321/share.dev/components"
-
 	"github.com/supabase-community/supabase-go"
+	"share.dev/components"
 )
 
 func Index(client *supabase.Client) http.HandlerFunc {
