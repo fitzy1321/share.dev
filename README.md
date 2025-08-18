@@ -9,19 +9,20 @@ Built using Golang + HTMX!
 - Golang
   - Builtin http server
 - Templ
-- Air (hot reloading)
+- [Air (hot reloading)](https://github.com/air-verse/air)
 - HTMX
 - Bulma CSS
+- Supabase
 
 ## Current Scope
 
-- Decent Homepage
-- Login / Signup pages
-- Scalable User Sessions
-- "Feed" Page
-- Post Text
-- Follow User thingy
-- Might need individual User page
+- [ ] Decent Homepage
+- [ ] Login / Signup pages
+- [ ] Scalable User Sessions
+- [ ]" Feed" Page
+- [ ] Post Text
+- [ ] Follow User thingy
+- [ ] Might need individual User page, Follow users
 
 Supabase for Auth and DB
 
@@ -43,6 +44,5 @@ air # live reload go files, templates, and html
 ## References
 
 - Primeagon talk on golang and htmx: <https://www.youtube.com/watch?v=x7v6SNIgJpE>
-- Air github page: <https://github.com/air-verse/air>
 - Supabase-go package: <https://github.com/supabase-community/supabase-go>
 - Local Development with Supabase <https://supabase.com/docs/guides/local-development>
