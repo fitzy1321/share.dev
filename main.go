@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -8,19 +9,20 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"share.dev/handlers"
-	supabaseclient "share.dev/supabase"
+	"share.dev/internal"
 )
 
 func loadEnvFile() error {
 	env := os.Getenv("GO_ENV")
+	fmt.Println("GO_ENV:", env)
 	var envFile string
 	switch env {
-	case "production":
-		envFile = ".env"
+	case "development":
+		envFile = ".env.local"
 	case "test":
 		envFile = ".env.test"
 	default:
-		envFile = ".env.local"
+		return godotenv.Load()
 	}
 	return godotenv.Load(envFile)
 }
@@ -30,7 +32,7 @@ func main() {
 	if err := loadEnvFile(); err != nil {
 		log.Fatalf("error loading .env: %v", err)
 	}
-	client, err := supabaseclient.GetClient()
+	client, err := internal.NewSupabase()
 	if err != nil {
 		log.Fatalln("Error preparing supabase client:", err)
 	}

@@ -1,0 +1,19 @@
+**/.git
+**/.github
+**/.gitignore
+# flyctl launch added from .gitignore
+**/tmp
+**/.env*
+**/.env.local
+**/**/.DS_Store
+
+# flyctl launch added from supabase/.gitignore
+# Supabase
+supabase/**/.branches
+supabase/**/.temp
+
+# dotenvx
+supabase/**/.env.keys
+supabase/**/.env.local
+supabase/**/.env.*.local
+fly.toml
