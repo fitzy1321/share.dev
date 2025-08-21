@@ -57,5 +57,5 @@ func main() {
 	e.GET("/dashboard", handlers.Dashboard, handlers.AuthRequired)
 	e.GET("/logout", handlers.Logout(client))
 
-	log.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":8080"))
 }

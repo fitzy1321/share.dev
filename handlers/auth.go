@@ -19,7 +19,6 @@ type Credentials struct {
 	Password string `form:"password"`
 }
 
-// Signup handler creates a new user with Supabase Auth.SignUpOptions
 func Signup(client *supabase.Client) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var creds Credentials
@@ -27,7 +26,6 @@ func Signup(client *supabase.Client) echo.HandlerFunc {
 			return c.String(http.StatusBadRequest, "Invalid signup data")
 		}
 
-		// Use SignUpOptions with Email and Password fields
 		session, err := client.Auth.Signup(types.SignupRequest{
 			Email:    creds.Email,
 			Password: creds.Password,
@@ -44,7 +42,6 @@ func Signup(client *supabase.Client) echo.HandlerFunc {
 	}
 }
 
-// Login authenticates user with email and password correctly
 func Login(client *supabase.Client) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var creds Credentials
@@ -73,20 +70,7 @@ func Logout(client *supabase.Client) echo.HandlerFunc {
 			}
 		}
 
-		clearCookie := func(name string) {
-			c.SetCookie(&http.Cookie{
-				Name:     name,
-				Value:    "",
-				Path:     "/",
-				MaxAge:   -1,
-				HttpOnly: true,
-				Secure:   true,
-				SameSite: http.SameSiteStrictMode,
-			})
-		}
-
-		clearCookie(accessTokenCookie)
-		clearCookie(refreshTokenCookie)
+		clearAuthCookies(c)
 
 		return c.Redirect(http.StatusSeeOther, "/login")
 	}
@@ -107,6 +91,27 @@ func setAuthCookies(c echo.Context, accessToken, refreshToken string) {
 		Value:    refreshToken,
 		Path:     "/",
 		Expires:  time.Now().Add(7 * 24 * time.Hour),
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+	})
+}
+
+func clearAuthCookies(c echo.Context) {
+	c.SetCookie(&http.Cookie{
+		Name:     accessTokenCookie,
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+	})
+	c.SetCookie(&http.Cookie{
+		Name:     refreshTokenCookie,
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
 		HttpOnly: true,
 		Secure:   true,
 		SameSite: http.SameSiteStrictMode,
