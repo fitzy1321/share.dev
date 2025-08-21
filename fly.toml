@@ -14,7 +14,7 @@ auto_stop_machines = 'stop'
 force_https = true
 internal_port = 8080
 min_machines_running = 0
-processes = ['run-app']
+processes = ['app']
 
 [[vm]]
 cpu_kind = 'shared'
