@@ -22,7 +22,9 @@ func loadEnvFile() error {
 	case "test":
 		envFile = ".env.test"
 	default:
-		return godotenv.Load()
+		// production is fly.io (for now)
+		// no .env file, just leave
+		return nil
 	}
 	return godotenv.Load(envFile)
 }
