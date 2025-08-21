@@ -17,7 +17,7 @@ Built using Golang + HTMX!
 
 ## Current Scope
 
-- [ ] Decent Homepage
+- [ ] Landing Page
 - [ ] Login / Signup pages
   - [ ] Supabase Auth
 - [ ] Scalable User Sessions
