@@ -6,25 +6,29 @@ Built using Golang + HTMX!
 
 ## Full Tech Stack
 
-- Golang
-  - Builtin http server
-- Templ
+- Golang v1.24.6
+- Echo API Framework
+- a-b/Templ package
+- HTMX - cdn script
+- Bulma CSS - cdn to minify css
+- Supabase - supabase-go package
 - [Air (hot reloading)](https://github.com/air-verse/air)
-- HTMX
-- Bulma CSS
-- Supabase
+- Fly.io hosting
 
 ## Current Scope
 
 - [ ] Decent Homepage
 - [ ] Login / Signup pages
+  - [ ] Supabase Auth
 - [ ] Scalable User Sessions
-- [ ]" Feed" Page
-- [ ] Post Text
-- [ ] Follow User thingy
+- [ ] "Feed" Page
+  - [ ] Post Text
+  - [ ] See Subscribed User posts
+- [ ] Subscribe to user
+  - [ ] Unsubscribe
 - [ ] Might need individual User page, Follow users
-
-Supabase for Auth and DB
+- [ ] Supabase DB for posts?
+- [ ] Supabase storage for images, videos, etc?
 
 ## Dev Notes
 
@@ -33,6 +37,7 @@ Install air: `go install github.com/air-verse/air@latest`.
 _Note_: GOPATH (i.e. where go install will place your package, usually `$Home/go/bin`) must be in your $PATH  
 
 Supabase cli: `brew install supabase/tap/supabase`
+Fly.io cli: `brew install flyctl`
 
 Run app locally with supabase
 
@@ -46,3 +51,4 @@ air # live reload go files, templates, and html
 - Primeagon talk on golang and htmx: <https://www.youtube.com/watch?v=x7v6SNIgJpE>
 - Supabase-go package: <https://github.com/supabase-community/supabase-go>
 - Local Development with Supabase <https://supabase.com/docs/guides/local-development>
+- Fly.io for hosting and deployments <https://fly.io/docs/>
