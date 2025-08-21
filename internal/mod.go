@@ -4,14 +4,15 @@ import (
 	"log"
 	"os"
 
-	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/supabase-go"
 )
 
-type AppContext struct {
-	echo.Context
-	Supabase *supabase.Client
-}
+// import "github.com/labstack/echo/v4"
+
+// type AppContext struct {
+// 	echo.Context
+// 	Supabase *supabase.Client
+// }
 
 // NewClient creates and returns a new Supabase client using environment variables SUPABASE_URL and SUPABASE_KEY.
 func NewSupabase() (*supabase.Client, error) {
