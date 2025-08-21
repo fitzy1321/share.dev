@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -14,16 +13,18 @@ import (
 
 func loadEnvFile() error {
 	env := os.Getenv("GO_ENV")
-	fmt.Println("GO_ENV:", env)
 	var envFile string
 	switch env {
 	case "development":
 		envFile = ".env.local"
 	case "test":
 		envFile = ".env.test"
-	default:
+	case "production":
 		// production is fly.io (for now)
 		// no .env file, just leave
+		return nil
+	default:
+		envFile = ".env"
 		return nil
 	}
 	return godotenv.Load(envFile)
