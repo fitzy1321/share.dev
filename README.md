@@ -36,7 +36,7 @@ Using Air for live reloading.
 Install air: `go install github.com/air-verse/air@latest`.  
 _Note_: GOPATH (i.e. where go install will place your package, usually `$Home/go/bin`) must be in your $PATH  
 
-Supabase cli: `brew install supabase/tap/supabase`
+Supabase cli: `brew install supabase/tap/supabase`.  
 Fly.io cli: `brew install flyctl`
 
 Run app locally with supabase
