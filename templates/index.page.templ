@@ -1,0 +1,24 @@
+package templates
+
+templ IndexPage() {
+  @Base("Share.dev – Connect and Share") {
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Welcome to Share.dev</h1>
+        <p class="subtitle">Connect with friends. Share your thoughts instantly.</p>
+
+        <div class="buttons">
+          <a href="/login" class="button is-link">Login</a>
+          <a href="/signup" class="button is-primary">Sign Up</a>
+        </div>
+
+        <hr/>
+
+        <h2 class="title is-4">Latest Posts</h2>
+        <div id="posts" hx-get="/posts" hx-trigger="load" hx-target="#posts" hx-swap="innerHTML">
+          <p>Loading latest posts...</p>
+        </div>
+      </div>
+    </section>
+  }
+}

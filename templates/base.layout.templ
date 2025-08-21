@@ -1,13 +1,11 @@
-package components
+package templates
 
-templ Base() {
+templ Base(title string,) {
     <!DOCTYPE html>
     <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Share.dev</title>
-        <!-- Bulma CSS -->
+        <head>
+        <meta charset="UTF-8" />
+        <title>{title}</title>
         <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
@@ -16,10 +14,13 @@ templ Base() {
         src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"
         integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm"
         crossorigin="anonymous"></script>
-
-    </head>
-    <body>
-        {children...}
-    </body>
+        </head>
+        <body>
+        <section class="section">
+            <div class="container">
+            {children...}
+            </div>
+        </section>
+        </body>
     </html>
 }

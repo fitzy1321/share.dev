@@ -1,42 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/supabase-community/supabase-go"
+	"github.com/labstack/echo/v4"
+
 	"share.dev/handlers"
+	supabaseclient "share.dev/supabase"
 )
 
-// func initSupaClient(envs map[string]string) *supabase.Client {
-func initSupaClient() *supabase.Client {
-	SUPABASE_URL, ok := os.LookupEnv("SUPABASE_URL")
-	if !ok || SUPABASE_URL == "" {
-		log.Fatalln("'SUPABASE_URL env key is required")
-	}
-
-	SUPABASE_ANON_KEY, ok := os.LookupEnv("SUPABASE_ANON_KEY")
-	if !ok || SUPABASE_ANON_KEY == "" {
-		log.Fatalln("This API needs env key 'SUPABASE_ANON_KEY' to run!")
-	}
-
-	client, err := supabase.NewClient(SUPABASE_URL, SUPABASE_ANON_KEY, &supabase.ClientOptions{})
-	if err != nil {
-		log.Fatalln("Error occurred setting up Supabase client: ", err)
-	}
-
-	_, err = client.Auth.HealthCheck()
-	if err != nil {
-		log.Fatalln("Supabase Auth Health Check Error: ", err)
-	}
-	return client
-}
-
-func main() {
+func loadEnvFile() error {
 	env := os.Getenv("GO_ENV")
 	var envFile string
 	switch env {
@@ -47,26 +22,40 @@ func main() {
 	default:
 		envFile = ".env.local"
 	}
+	return godotenv.Load(envFile)
+}
 
-	err := godotenv.Load(envFile)
+func main() {
+	// Load env
+	if err := loadEnvFile(); err != nil {
+		log.Fatalf("error loading .env: %v", err)
+	}
+	client, err := supabaseclient.GetClient()
 	if err != nil {
-		log.Fatalf("Error loading %s file", envFile)
+		log.Fatalln("Error preparing supabase client:", err)
 	}
 
-	client := initSupaClient()
+	e := echo.New()
 
-	// server static resources
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	e.Static("/static", "static")
 
-	http.HandleFunc("/", handlers.Index(client))
-	http.HandleFunc("/login", handlers.Login(client))
+	e.HTTPErrorHandler = handlers.CustomErrorHandler
 
-	http.HandleFunc("/time", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Current time: " + time.Now().Format(time.RFC1123)))
-	})
+	// Security and CSRF middleware
+	e.Use(handlers.RateLimitMiddleware)
+	e.Use(handlers.CSRFMiddleware)
+	e.Use(handlers.SecurityHeaders)
 
-	fmt.Println("Started http server on port :8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Fatalln(err)
-	}
+	// Setup Supabase
+
+	// Routes using a-h/templ
+	e.GET("/", handlers.IndexPage)
+	e.GET("/login", handlers.LoginPage)
+	e.POST("/login", handlers.Login(client))
+	// e.GET("/signup", handlers.SignupPage)
+	// e.POST("/signup", handlers.Signup(client))
+	e.GET("/dashboard", handlers.Dashboard, handlers.AuthRequired)
+	e.GET("/logout", handlers.Logout(client))
+
+	log.Fatal(e.Start(":8080"))
 }
