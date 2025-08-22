@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/gotrue-go/types"
 	"github.com/supabase-community/supabase-go"
@@ -19,6 +20,36 @@ type Credentials struct {
 	Password string `form:"password"`
 }
 
+// Add this func to your routes
+func AuthRequired(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cookie, err := c.Cookie(accessTokenCookie)
+		if err != nil {
+			return c.Redirect(http.StatusSeeOther, "/login")
+		}
+
+		token, _, err := new(jwt.Parser).ParseUnverified(cookie.Value, jwt.MapClaims{})
+		if err != nil {
+			return c.Redirect(http.StatusSeeOther, "/login")
+		}
+
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if !ok {
+			return c.Redirect(http.StatusSeeOther, "/login")
+		}
+
+		email, _ := claims["email"].(string)
+		if email == "" {
+			return c.Redirect(http.StatusSeeOther, "/login")
+		}
+
+		c.Set("user_email", email)
+
+		return next(c)
+	}
+}
+
+// POST /signup formdata
 func Signup(client *supabase.Client) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var creds Credentials
@@ -42,6 +73,7 @@ func Signup(client *supabase.Client) echo.HandlerFunc {
 	}
 }
 
+// POST /login formdata
 func Login(client *supabase.Client) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var creds Credentials

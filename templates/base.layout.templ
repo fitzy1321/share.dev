@@ -1,21 +1,19 @@
 package templates
 
-templ Base(title string,) {
+import "html"
+
+templ Base(title string) {
     <!DOCTYPE html>
     <html lang="en">
         <head>
         <meta charset="UTF-8" />
-        <title>{title}</title>
+        <title>{ html.EscapeString(title) }</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
         <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js" integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm"crossorigin="anonymous"></script>
 
         </head>
         <body>
-        <section class="section">
-            <div class="container">
-            {children...}
-            </div>
-        </section>
+            { children... }
         </body>
     </html>
 }

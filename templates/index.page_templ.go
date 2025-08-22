@@ -8,7 +8,7 @@ package templates
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func IndexPage() templ.Component {
+func IndexPage(csrfToken string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -41,13 +41,39 @@ func IndexPage() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"section\"><div class=\"container\"><h1 class=\"title\">Welcome to Share.dev</h1><p class=\"subtitle\">Connect with friends. Share your thoughts instantly.</p><div class=\"buttons\"><a href=\"/login\" class=\"button is-link\">Login</a> <a href=\"/signup\" class=\"button is-primary\">Sign Up</a></div><hr><h2 class=\"title is-4\">Latest Posts</h2><div id=\"posts\" hx-get=\"/posts\" hx-trigger=\"load\" hx-target=\"#posts\" hx-swap=\"innerHTML\"><p>Loading latest posts...</p></div></div></section>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!-- Hero Section --> <section class=\"hero is-fullheight is-link\"><div class=\"hero-body\"><div class=\"container has-text-centered\"><h1 class=\"title is-size-1\">Welcome to Share.dev 🌐</h1><h2 class=\"subtitle is-size-4\">Connect. Share. Discover.</h2><div class=\"buttons is-centered mt-5\"><button class=\"button is-light is-medium\" data-toggle=\"login-modal\">Log In</button> <button class=\"button is-primary is-medium\" data-toggle=\"signup-modal\">Sign Up</button></div></div></div></section><!-- Login Modal --> <div class=\"modal\" id=\"login-modal\"><div class=\"modal-background\"></div><div class=\"modal-card\"><header class=\"modal-card-head\"><p class=\"modal-card-title\">Log In</p><button class=\"delete\" aria-label=\"close\" data-toggle=\"login-modal\"></button></header><section class=\"modal-card-body\"><form hx-post=\"/login\" hx-trigger=\"submit delay:500ms\" hx-target=\"#login-error-message\" hx-swap=\"innerHTML\"><input type=\"hidden\" name=\"csrf_token\" value=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var3 string
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(csrfToken)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.page.templ`, Line: 32, Col: 67}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\"><div id=\"login-error-message\" class=\"error-message has-text-danger mb-3\"></div><div class=\"field\"><label class=\"label\">Email</label><div class=\"control\"><input class=\"input\" type=\"email\" name=\"email\" required autocomplete=\"username\"></div></div><div class=\"field\"><label class=\"label\">Password</label><div class=\"control\"><input class=\"input\" type=\"password\" name=\"password\" required autocomplete=\"current-password\"></div></div><div class=\"has-text-right\"><button type=\"submit\" class=\"button is-link\">Log In</button></div></form></section></div></div><!-- Signup Modal --> <div class=\"modal\" id=\"signup-modal\"><div class=\"modal-background\"></div><div class=\"modal-card\"><header class=\"modal-card-head\"><p class=\"modal-card-title\">Sign Up</p><button class=\"delete\" aria-label=\"close\" data-toggle=\"signup-modal\"></button></header><section class=\"modal-card-body\"><form id=\"signup-form\" hx-post=\"/signup\" hx-trigger=\"submit delay:500ms\" hx-target=\"#signup-error-message\" hx-swap=\"innerHTML\"><input type=\"hidden\" name=\"csrf_token\" value=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var4 string
+			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(csrfToken)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.page.templ`, Line: 68, Col: 67}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><div id=\"signup-error-message\" class=\"error-message has-text-danger mb-3\"></div><div class=\"field\"><label class=\"label\">Name</label><div class=\"control\"><input class=\"input\" type=\"text\" name=\"name\" required></div></div><div class=\"field\"><label class=\"label\">Email</label><div class=\"control\"><input class=\"input\" type=\"email\" name=\"email\" required autocomplete=\"username\"></div></div><div class=\"field\"><label class=\"label\">Password</label><div class=\"control\"><input class=\"input\" type=\"password\" name=\"password\" required autocomplete=\"new-password\"></div></div><div class=\"field\"><label class=\"label\">Confirm Password</label><div class=\"control\"><input class=\"input\" type=\"password\" name=\"confirm_password\" required autocomplete=\"new-password\"></div></div><div class=\"has-text-right\"><button type=\"submit\" class=\"button is-primary\">Sign Up</button></div></form></section></div></div><script>\n      document.addEventListener(\"DOMContentLoaded\", () => {\n        // Modal toggle logic\n        document.querySelectorAll(\"[data-toggle]\").forEach(btn => {\n          btn.addEventListener(\"click\", () => {\n            let target = document.getElementById(btn.dataset.toggle);\n            target.classList.toggle(\"is-active\");\n            // clear error messages & reset forms when modals open\n            const errorMessages = target.querySelectorAll(\".error-message\");\n            errorMessages.forEach(em => em.textContent = \"\");\n            const forms = target.querySelectorAll(\"form\");\n            forms.forEach(f => f.reset());\n          });\n        });\n\n        // Confirm password validation before signup submit\n        const signupForm = document.getElementById(\"signup-form\");\n        if (signupForm) {\n          signupForm.addEventListener(\"submit\", (e) => {\n            const pw = signupForm.querySelector('input[name=\"password\"]');\n            const pw2 = signupForm.querySelector('input[name=\"confirm_password\"]');\n            const errorBox = signupForm.querySelector(\".error-message\");\n            if (pw.value !== pw2.value) {\n              e.preventDefault();\n              errorBox.textContent = \"Passwords do not match.\";\n              pw.classList.add(\"is-danger\");\n              pw2.classList.add(\"is-danger\");\n              return false;\n            }\n            // Clear errors on success\n            pw.classList.remove(\"is-danger\");\n            pw2.classList.remove(\"is-danger\");\n            errorBox.textContent = \"\";\n          });\n        }\n\n        // Clear error highlight on input change\n        document.querySelectorAll('input[type=\"password\"], input[type=\"email\"], input[type=\"text\"]').forEach(input => {\n          input.addEventListener(\"input\", () => {\n            input.classList.remove(\"is-danger\");\n            const errorBox = input.closest(\"form\").querySelector(\".error-message\");\n            if (errorBox) errorBox.textContent = \"\";\n          });\n        });\n      });\n    </script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = Base("Share.dev – Connect and Share").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Base("Share.dev - Connect and Share").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

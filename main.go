@@ -6,7 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
-
+	"github.com/labstack/echo/v4/middleware"
 	"share.dev/handlers"
 	"share.dev/internal"
 )
@@ -41,25 +41,30 @@ func main() {
 	}
 
 	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	e.Static("/static", "static")
+	// Security and CSRF middleware
+	// e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20)))
+	e.Use(middleware.CSRF())
+	e.Use(middleware.Secure())
 
 	e.HTTPErrorHandler = handlers.CustomErrorHandler
 
-	// Security and CSRF middleware
-	e.Use(handlers.RateLimitMiddleware)
-	e.Use(handlers.CSRFMiddleware)
-	e.Use(handlers.SecurityHeaders)
+	e.Static("/static", "static")
 
-	// Setup Supabase
-
-	// Routes using a-h/templ
+	// Routes
 	e.GET("/", handlers.IndexPage)
+
 	e.GET("/login", handlers.LoginPage)
 	e.POST("/login", handlers.Login(client))
+
 	// e.GET("/signup", handlers.SignupPage)
 	// e.POST("/signup", handlers.Signup(client))
+
+	// Example of route with Auth handling
 	e.GET("/dashboard", handlers.Dashboard, handlers.AuthRequired)
+
 	e.GET("/logout", handlers.Logout(client))
 
 	e.Logger.Fatal(e.Start(":8080"))
