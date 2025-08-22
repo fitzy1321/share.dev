@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"share.dev/handlers"
+	"share.dev/handlers/api"
 	"share.dev/internal"
 )
 
@@ -62,10 +63,11 @@ func main() {
 	// e.GET("/signup", handlers.SignupPage)
 	// e.POST("/signup", handlers.Signup(client))
 
-	// Example of route with Auth handling
-	e.GET("/dashboard", handlers.Dashboard, handlers.AuthRequired)
-
 	e.GET("/logout", handlers.Logout(client))
 
+	e.GET("/home", handlers.Home, handlers.AuthRequired)
+
+	g := e.Group("/api", handlers.AuthRequired)
+	g.GET("/feed", api.Feed)
 	e.Logger.Fatal(e.Start(":8080"))
 }

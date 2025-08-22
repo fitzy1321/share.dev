@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -17,6 +18,10 @@ func getCSRFToken(c echo.Context) string {
 }
 
 func IndexPage(c echo.Context) error {
+	_, ok := c.Cookie(accessTokenCookie)
+	if ok == nil { // if there IS an accessTokenCookie, redirect to dashboard
+		c.Redirect(http.StatusPermanentRedirect, "/home")
+	}
 	csrf := getCSRFToken(c)
 	return templates.IndexPage(csrf).Render(context.Background(), c.Response().Writer)
 }
@@ -31,7 +36,7 @@ func SignupPage(c echo.Context) error {
 	return templates.Signup(csrfToken).Render(context.Background(), c.Response().Writer)
 }
 
-func Dashboard(c echo.Context) error {
+func Home(c echo.Context) error {
 	userEmail, _ := c.Get("user_email").(string)
 	return templates.Dashboard(userEmail).Render(context.Background(), c.Response().Writer)
 }

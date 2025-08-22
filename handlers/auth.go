@@ -49,65 +49,6 @@ func AuthRequired(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-// POST /signup formdata
-func Signup(client *supabase.Client) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		var creds Credentials
-		if err := c.Bind(&creds); err != nil {
-			return c.String(http.StatusBadRequest, "Invalid signup data")
-		}
-
-		session, err := client.Auth.Signup(types.SignupRequest{
-			Email:    creds.Email,
-			Password: creds.Password,
-			// Optionally,
-			// EmailRedirectTo: "https://yourapp.com/welcome", // for email confirmation redirect
-		})
-
-		if err != nil || session == nil {
-			return c.String(http.StatusBadRequest, "Signup failed: "+err.Error())
-		}
-
-		setAuthCookies(c, session.AccessToken, session.RefreshToken)
-		return c.Redirect(http.StatusSeeOther, "/dashboard")
-	}
-}
-
-// POST /login formdata
-func Login(client *supabase.Client) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		var creds Credentials
-		if err := c.Bind(&creds); err != nil {
-			return c.String(http.StatusBadRequest, "Invalid login data")
-		}
-
-		session, err := client.Auth.SignInWithEmailPassword(creds.Email, creds.Password)
-		if err != nil || session == nil {
-			return c.String(http.StatusUnauthorized, "Login failed: "+err.Error())
-		}
-
-		setAuthCookies(c, session.AccessToken, session.RefreshToken)
-		return c.Redirect(http.StatusSeeOther, "/dashboard")
-	}
-}
-
-// Logout calls Supabase Auth.Logout and clears auth cookies
-func Logout(client *supabase.Client) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		accessCookie, err := c.Cookie(accessTokenCookie)
-		if err == nil && accessCookie.Value != "" {
-			err = client.Auth.Logout()
-			if err != nil {
-				c.Logger().Error("Problem with logout", err)
-			}
-		}
-
-		clearAuthCookies(c)
-
-		return c.Redirect(http.StatusSeeOther, "/login")
-	}
-}
-
 func setAuthCookies(c echo.Context, accessToken, refreshToken string) {
 	c.SetCookie(&http.Cookie{
 		Name:     accessTokenCookie,
@@ -148,4 +89,65 @@ func clearAuthCookies(c echo.Context) {
 		Secure:   true,
 		SameSite: http.SameSiteStrictMode,
 	})
+}
+
+//* Auth Related Routes
+
+// POST /login formdata
+func Login(client *supabase.Client) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var creds Credentials
+		if err := c.Bind(&creds); err != nil {
+			return c.String(http.StatusBadRequest, "Invalid login data")
+		}
+
+		session, err := client.Auth.SignInWithEmailPassword(creds.Email, creds.Password)
+		if err != nil || session == nil {
+			return c.String(http.StatusUnauthorized, "Login failed: "+err.Error())
+		}
+
+		setAuthCookies(c, session.AccessToken, session.RefreshToken)
+		return c.Redirect(http.StatusSeeOther, "/home")
+	}
+}
+
+// POST /logout ~ calls Supabase Auth.Logout and clears auth cookies
+func Logout(client *supabase.Client) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		accessCookie, err := c.Cookie(accessTokenCookie)
+		if err == nil && accessCookie.Value != "" {
+			err = client.Auth.Logout()
+			if err != nil {
+				c.Logger().Error("Problem with logout", err)
+			}
+		}
+
+		clearAuthCookies(c)
+
+		return c.Redirect(http.StatusSeeOther, "/login")
+	}
+}
+
+// POST /signup formdata
+func Signup(client *supabase.Client) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var creds Credentials
+		if err := c.Bind(&creds); err != nil {
+			return c.String(http.StatusBadRequest, "Invalid signup data")
+		}
+
+		session, err := client.Auth.Signup(types.SignupRequest{
+			Email:    creds.Email,
+			Password: creds.Password,
+			// Optionally,
+			// EmailRedirectTo: "https://yourapp.com/welcome", // for email confirmation redirect
+		})
+
+		if err != nil || session == nil {
+			return c.String(http.StatusBadRequest, "Signup failed: "+err.Error())
+		}
+
+		setAuthCookies(c, session.AccessToken, session.RefreshToken)
+		return c.Redirect(http.StatusSeeOther, "/home")
+	}
 }
