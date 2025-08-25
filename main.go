@@ -57,7 +57,7 @@ func main() {
 	// Routes
 	e.GET("/", handlers.IndexPage)
 
-	e.GET("/login", handlers.LoginPage)
+	// e.GET("/login", handlers.LoginPage)
 	e.POST("/login", handlers.Login(client))
 
 	// e.GET("/signup", handlers.SignupPage)

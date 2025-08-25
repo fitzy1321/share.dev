@@ -103,7 +103,7 @@ func Login(client *supabase.Client) echo.HandlerFunc {
 
 		session, err := client.Auth.SignInWithEmailPassword(creds.Email, creds.Password)
 		if err != nil || session == nil {
-			return c.String(http.StatusUnauthorized, "Login failed: "+err.Error())
+			return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
 		}
 
 		setAuthCookies(c, session.AccessToken, session.RefreshToken)

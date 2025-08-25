@@ -38,5 +38,5 @@ func SignupPage(c echo.Context) error {
 
 func Home(c echo.Context) error {
 	userEmail, _ := c.Get("user_email").(string)
-	return templates.Dashboard(userEmail).Render(context.Background(), c.Response().Writer)
+	return templates.Home(userEmail).Render(context.Background(), c.Response().Writer)
 }
