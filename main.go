@@ -7,13 +7,18 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/supabase-community/supabase-go"
 	"share.dev/handlers"
 	"share.dev/handlers/api"
-	"share.dev/internal"
+	"share.dev/routes"
 )
 
 func loadEnvFile() error {
-	env := os.Getenv("GO_ENV")
+	env, ok := os.LookupEnv("GO_ENV")
+	if !ok {
+		return godotenv.Load(".env.local")
+	}
+
 	var envFile string
 	switch env {
 	case "development":
@@ -26,9 +31,21 @@ func loadEnvFile() error {
 		return nil
 	default:
 		envFile = ".env"
-		return nil
 	}
 	return godotenv.Load(envFile)
+}
+
+// NewClient creates and returns a new Supabase client using environment variables SUPABASE_URL and SUPABASE_KEY.
+func NewSupabase() (*supabase.Client, error) {
+	supaURL, ok := os.LookupEnv("SUPABASE_URL")
+	if !ok {
+		log.Fatalln("'SUPABASE_URL' env key not found")
+	}
+	supaKey, ok := os.LookupEnv("SUPABASE_ANON_KEY")
+	if !ok {
+		log.Fatalln("'SUPABASE_ANON_KEY' env key not found")
+	}
+	return supabase.NewClient(supaURL, supaKey, &supabase.ClientOptions{})
 }
 
 func main() {
@@ -36,7 +53,7 @@ func main() {
 	if err := loadEnvFile(); err != nil {
 		log.Fatalf("error loading .env: %v", err)
 	}
-	client, err := internal.NewSupabase()
+	client, err := NewSupabase()
 	if err != nil {
 		log.Fatalln("Error preparing supabase client:", err)
 	}
@@ -52,22 +69,20 @@ func main() {
 
 	e.HTTPErrorHandler = handlers.CustomErrorHandler
 
-	e.Static("/static", "static")
+	e.Static(routes.Static, "static")
 
 	// Routes
-	e.GET("/", handlers.IndexPage)
+	e.GET(routes.Index, handlers.IndexPage)
 
-	// e.GET("/login", handlers.LoginPage)
-	e.POST("/login", handlers.Login(client))
+	e.POST(routes.Login, handlers.Login(client))
+	e.GET(routes.Logout, handlers.Logout(client))
+	e.POST(routes.Signup, handlers.Signup(client))
 
-	// e.GET("/signup", handlers.SignupPage)
-	// e.POST("/signup", handlers.Signup(client))
-
-	e.GET("/logout", handlers.Logout(client))
-
-	e.GET("/home", handlers.Home, handlers.AuthRequired)
+	e.GET(routes.Main, handlers.MainPage, handlers.AuthRequired)
 
 	g := e.Group("/api", handlers.AuthRequired)
 	g.GET("/feed", api.Feed)
+
+	// Start Server, and log results
 	e.Logger.Fatal(e.Start(":8080"))
 }

@@ -8,6 +8,8 @@ package templates
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import "share.dev/routes"
+
 func IndexPage(csrfToken string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -41,33 +43,59 @@ func IndexPage(csrfToken string) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!-- Hero Section --> <section class=\"hero is-fullheight is-link\"><div class=\"hero-body\"><div class=\"container has-text-centered\"><h1 class=\"title is-size-1\">Welcome to Share.dev 🌐</h1><h2 class=\"subtitle is-size-4\">Connect. Share. Discover.</h2><div class=\"buttons is-centered mt-5\"><button class=\"button is-light is-medium\" data-toggle=\"login-modal\">Log In</button> <button class=\"button is-primary is-medium\" data-toggle=\"signup-modal\">Sign Up</button></div></div></div></section><!-- Login Modal --> <div class=\"modal\" id=\"login-modal\"><div class=\"modal-background\"></div><div class=\"modal-card\"><header class=\"modal-card-head\"><p class=\"modal-card-title\">Log In</p><button class=\"delete\" aria-label=\"close\" data-toggle=\"login-modal\"></button></header><section class=\"modal-card-body\"><form hx-post=\"/login\" hx-trigger=\"submit delay:500ms\" hx-target=\"#login-error-message\" hx-swap=\"innerHTML\"><input type=\"hidden\" name=\"csrf_token\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<style>\n        .tab-content {\n            display: none;\n        }\n\n        .tab-content.is-active {\n            display: block;\n        }\n\n        .hero {\n            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n        }\n    </style> <!-- Hero --> <section class=\"hero is-primary is-fullheight\"><div class=\"hero-head\"><nav class=\"navbar is-transparent\"><div class=\"container\"><div class=\"navbar-brand\"><a class=\"navbar-item\"><i class=\"fas fa-code-branch mr-2\"></i> <strong>Share.dev</strong></a></div></div></nav></div><div class=\"hero-body\"><div class=\"container\"><div class=\"columns is-vcentered\"><!-- Left side - Content --><div class=\"column is-6\"><h1 class=\"title is-1\">Connect with the world</h1><h2 class=\"subtitle is-4\">Share your thoughts and discover new perspectives</h2></div><!-- Right side - Auth Form --><div class=\"column is-6\"><div class=\"box\"><div class=\"tabs is-centered is-boxed\"><ul><li class=\"is-active\" data-target=\"login\"><a><span>Log In</span></a></li><li data-target=\"signup\"><a><span>Sign Up</span></a></li></ul></div><!-- Log In --><div id=\"login\" class=\"tab-content is-active\"><form hx-post=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(csrfToken)
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(routes.Login)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.page.templ`, Line: 32, Col: 67}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.page.templ`, Line: 61, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\"><div id=\"login-error-message\" class=\"error-message has-text-danger mb-3\"></div><div class=\"field\"><label class=\"label\">Email</label><div class=\"control\"><input class=\"input\" type=\"email\" name=\"email\" required autocomplete=\"username\"></div></div><div class=\"field\"><label class=\"label\">Password</label><div class=\"control\"><input class=\"input\" type=\"password\" name=\"password\" required autocomplete=\"current-password\"></div></div><div class=\"has-text-right\"><button type=\"submit\" class=\"button is-link\">Log In</button></div></form></section></div></div><!-- Signup Modal --> <div class=\"modal\" id=\"signup-modal\"><div class=\"modal-background\"></div><div class=\"modal-card\"><header class=\"modal-card-head\"><p class=\"modal-card-title\">Sign Up</p><button class=\"delete\" aria-label=\"close\" data-toggle=\"signup-modal\"></button></header><section class=\"modal-card-body\"><form id=\"signup-form\" hx-post=\"/signup\" hx-trigger=\"submit delay:500ms\" hx-target=\"#signup-error-message\" hx-swap=\"innerHTML\"><input type=\"hidden\" name=\"csrf_token\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" hx-target=\"#result\"><input type=\"hidden\" name=\"csrf_token\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(csrfToken)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.page.templ`, Line: 68, Col: 67}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.page.templ`, Line: 62, Col: 91}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><div id=\"signup-error-message\" class=\"error-message has-text-danger mb-3\"></div><div class=\"field\"><label class=\"label\">Name</label><div class=\"control\"><input class=\"input\" type=\"text\" name=\"name\" required></div></div><div class=\"field\"><label class=\"label\">Email</label><div class=\"control\"><input class=\"input\" type=\"email\" name=\"email\" required autocomplete=\"username\"></div></div><div class=\"field\"><label class=\"label\">Password</label><div class=\"control\"><input class=\"input\" type=\"password\" name=\"password\" required autocomplete=\"new-password\"></div></div><div class=\"field\"><label class=\"label\">Confirm Password</label><div class=\"control\"><input class=\"input\" type=\"password\" name=\"confirm_password\" required autocomplete=\"new-password\"></div></div><div class=\"has-text-right\"><button type=\"submit\" class=\"button is-primary\">Sign Up</button></div></form></section></div></div><script>\n      document.addEventListener(\"DOMContentLoaded\", () => {\n        // Modal toggle logic\n        document.querySelectorAll(\"[data-toggle]\").forEach(btn => {\n          btn.addEventListener(\"click\", () => {\n            let target = document.getElementById(btn.dataset.toggle);\n            target.classList.toggle(\"is-active\");\n            // clear error messages & reset forms when modals open\n            const errorMessages = target.querySelectorAll(\".error-message\");\n            errorMessages.forEach(em => em.textContent = \"\");\n            const forms = target.querySelectorAll(\"form\");\n            forms.forEach(f => f.reset());\n          });\n        });\n\n        // Confirm password validation before signup submit\n        const signupForm = document.getElementById(\"signup-form\");\n        if (signupForm) {\n          signupForm.addEventListener(\"submit\", (e) => {\n            const pw = signupForm.querySelector('input[name=\"password\"]');\n            const pw2 = signupForm.querySelector('input[name=\"confirm_password\"]');\n            const errorBox = signupForm.querySelector(\".error-message\");\n            if (pw.value !== pw2.value) {\n              e.preventDefault();\n              errorBox.textContent = \"Passwords do not match.\";\n              pw.classList.add(\"is-danger\");\n              pw2.classList.add(\"is-danger\");\n              return false;\n            }\n            // Clear errors on success\n            pw.classList.remove(\"is-danger\");\n            pw2.classList.remove(\"is-danger\");\n            errorBox.textContent = \"\";\n          });\n        }\n\n        // Clear error highlight on input change\n        document.querySelectorAll('input[type=\"password\"], input[type=\"email\"], input[type=\"text\"]').forEach(input => {\n          input.addEventListener(\"input\", () => {\n            input.classList.remove(\"is-danger\");\n            const errorBox = input.closest(\"form\").querySelector(\".error-message\");\n            if (errorBox) errorBox.textContent = \"\";\n          });\n        });\n      });\n    </script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><div class=\"field\"><input class=\"input\" type=\"text\" name=\"login\" placeholder=\"Email or Username\" required></div><div class=\"field\"><input class=\"input\" type=\"password\" name=\"password\" placeholder=\"Password\" required></div><div class=\"field\"><button class=\"button is-link is-fullwidth\" type=\"submit\">Log In</button></div></form></div><!-- Sign Up --><div id=\"signup\" class=\"tab-content\"><form hx-post=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var5 string
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(routes.Signup)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.page.templ`, Line: 77, Col: 61}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" hx-target=\"#result\"><input type=\"hidden\" name=\"csrf_token\" value=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var6 string
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(csrfToken)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.page.templ`, Line: 78, Col: 91}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\"><div class=\"field\"><input class=\"input\" type=\"email\" name=\"email\" placeholder=\"Email\" required></div><div class=\"field\"><input class=\"input\" type=\"password\" name=\"password\" placeholder=\"Password\" minlength=\"8\" required><p class=\"help is-size-7\">Password must be at least 8 characters with uppercase, lowercase, number, and special character</p></div><div class=\"field\"><input class=\"input\" type=\"password\" name=\"confirm_password\" placeholder=\"Confirm Password\" minlength=\"8\" required></div><div class=\"field\"><button class=\"button is-primary is-fullwidth\" type=\"submit\">Create Account</button></div></form></div><div id=\"result\"></div></div></div></div></div></div></section><script>\n        // Tab switching\n        document.querySelectorAll('.tabs li').forEach(tab => {\n            tab.addEventListener('click', function () {\n                const target = this.dataset.target;\n\n                document.querySelectorAll('.tabs li').forEach(t => t.classList.remove('is-active'));\n                document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('is-active'));\n\n                this.classList.add('is-active');\n                document.getElementById(target).classList.add('is-active');\n            });\n        });\n\n        // Password confirmation validation\n        document.addEventListener('DOMContentLoaded', function() {\n            const signupForm = document.querySelector('#signup form');\n            const password = signupForm.querySelector('input[name=\"password\"]');\n            const confirmPassword = signupForm.querySelector('input[name=\"confirm_password\"]');\n\n            function validatePasswordMatch() {\n                if (password.value && confirmPassword.value) {\n                    if (password.value !== confirmPassword.value) {\n                        confirmPassword.setCustomValidity('Passwords do not match');\n                        confirmPassword.classList.add('is-danger');\n                    } else {\n                        confirmPassword.setCustomValidity('');\n                        confirmPassword.classList.remove('is-danger');\n                    }\n                }\n            }\n\n            password.addEventListener('input', validatePasswordMatch);\n            confirmPassword.addEventListener('input', validatePasswordMatch);\n        });\n\n        // Loading states\n        document.body.addEventListener('htmx:beforeRequest', function (evt) {\n            evt.detail.elt.querySelector('button').classList.add('is-loading');\n        });\n\n        document.body.addEventListener('htmx:afterRequest', function (evt) {\n            evt.detail.elt.querySelector('button').classList.remove('is-loading');\n        });\n    </script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

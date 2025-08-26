@@ -1,11 +1,13 @@
 package templates
 
+import "share.dev/routes"
+
 templ ErrorPage(code int, message string) {
     @Base("Error") {
         <div class="notification is-danger">
             <h1 class="title">Error {code}</h1>
             <p>{message}</p>
         </div>
-        <a href="/" class="button">Go home</a>
+        <a href={ routes.Index } class="button">Go home</a>
     }
 }

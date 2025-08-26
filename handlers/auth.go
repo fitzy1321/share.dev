@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+	"html"
 	"net/http"
 	"time"
 
@@ -8,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/gotrue-go/types"
 	"github.com/supabase-community/supabase-go"
+	"share.dev/routes"
 )
 
 const (
@@ -25,27 +28,133 @@ func AuthRequired(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		cookie, err := c.Cookie(accessTokenCookie)
 		if err != nil {
-			return c.Redirect(http.StatusSeeOther, "/login")
+			return c.Redirect(http.StatusSeeOther, routes.Login)
 		}
 
 		token, _, err := new(jwt.Parser).ParseUnverified(cookie.Value, jwt.MapClaims{})
 		if err != nil {
-			return c.Redirect(http.StatusSeeOther, "/login")
+			return c.Redirect(http.StatusSeeOther, routes.Login)
 		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
-			return c.Redirect(http.StatusSeeOther, "/login")
+			return c.Redirect(http.StatusSeeOther, routes.Login)
 		}
 
 		email, _ := claims["email"].(string)
 		if email == "" {
-			return c.Redirect(http.StatusSeeOther, "/login")
+			return c.Redirect(http.StatusSeeOther, routes.Login)
 		}
 
 		c.Set("user_email", email)
 
 		return next(c)
+	}
+}
+
+//* Auth Related Routes
+
+// POST /login formdata
+func Login(client *supabase.Client) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// Only Htmx requests allowed
+		if c.Request().Header.Get("HX-Request") != "true" {
+			return c.JSON(http.StatusBadRequest, "Invalid request")
+		}
+
+		// Get form data manually since you're using form fields "login" and "password"
+		loginField := c.FormValue("login") // This handles email or username
+		password := c.FormValue("password")
+
+		// Validate input
+		if loginField == "" || password == "" {
+			errorHTML := `
+				<div class="notification is-danger is-light">
+					<button class="delete" onclick="this.parentElement.style.display='none'"></button>
+					<strong>Validation Error:</strong> Email/username and password are required.
+				</div>
+			`
+			return c.HTML(400, errorHTML)
+		}
+
+		// Attempt authentication with Supabase
+		session, err := client.Auth.SignInWithEmailPassword(loginField, password)
+		if err != nil {
+			errorHTML := fmt.Sprintf(`
+				<div class="notification is-danger is-light">
+					<button class="delete" onclick="this.parentElement.style.display='none'"></button>
+					<strong>Login Failed:</strong> %s
+				</div>
+			`, html.EscapeString(err.Error()))
+			return c.HTML(401, errorHTML)
+		}
+
+		if session == nil {
+			errorHTML := `
+				<div class="notification is-danger is-light">
+					<button class="delete" onclick="this.parentElement.style.display='none'"></button>
+					<strong>Login Failed:</strong> Authentication session could not be created.
+				</div>
+			`
+			return c.HTML(401, errorHTML)
+		}
+
+		// Set authentication cookies
+		setAuthCookies(c, session.AccessToken, session.RefreshToken)
+
+		// SUCCESS: Full page redirect using HTMX
+		c.Response().Header().Set("HX-Redirect", routes.Main)
+		return c.NoContent(200)
+	}
+}
+
+// POST /logout ~ calls Supabase Auth.Logout and clears auth cookies
+func Logout(client *supabase.Client) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		accessCookie, err := c.Cookie(accessTokenCookie)
+		if err == nil && accessCookie.Value != "" {
+			err = client.Auth.Logout()
+			if err != nil {
+				c.Logger().Error("Problem with logout", err)
+			}
+		}
+
+		clearAuthCookies(c)
+
+		return c.Redirect(http.StatusSeeOther, routes.Login)
+	}
+}
+
+// POST /signup formdata
+func Signup(client *supabase.Client) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// Only Htmx requests allowed
+
+		if c.Request().Header.Get("HX-Request") != "true" {
+			return c.JSON(http.StatusBadRequest, "Invalid request")
+		}
+
+		var creds Credentials
+		if err := c.Bind(&creds); err != nil {
+			return c.String(http.StatusBadRequest, "Invalid signup data")
+		}
+
+		signupResp, err := client.Auth.Signup(types.SignupRequest{
+			Email:    creds.Email,
+			Password: creds.Password,
+			// Optionally,
+			// EmailRedirectTo: "https://yourapp.com/welcome", // for email confirmation redirect
+		})
+
+		if err != nil || signupResp == nil {
+			return c.String(http.StatusBadRequest, "Signup failed: "+err.Error())
+		}
+
+		fmt.Println("Type of token returned from Supabase:", signupResp.TokenType)
+
+		setAuthCookies(c, signupResp.AccessToken, signupResp.RefreshToken)
+		return c.Redirect(http.StatusSeeOther, MainRoute)
+
 	}
 }
 
@@ -91,63 +200,19 @@ func clearAuthCookies(c echo.Context) {
 	})
 }
 
-//* Auth Related Routes
+// func ValidateSignup(email, pass string) error {
+// 	if email != "" {
 
-// POST /login formdata
-func Login(client *supabase.Client) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		var creds Credentials
-		if err := c.Bind(&creds); err != nil {
-			return c.String(http.StatusBadRequest, "Invalid login data")
-		}
-
-		session, err := client.Auth.SignInWithEmailPassword(creds.Email, creds.Password)
-		if err != nil || session == nil {
-			return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
-		}
-
-		setAuthCookies(c, session.AccessToken, session.RefreshToken)
-		return c.Redirect(http.StatusSeeOther, "/home")
-	}
-}
-
-// POST /logout ~ calls Supabase Auth.Logout and clears auth cookies
-func Logout(client *supabase.Client) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		accessCookie, err := c.Cookie(accessTokenCookie)
-		if err == nil && accessCookie.Value != "" {
-			err = client.Auth.Logout()
-			if err != nil {
-				c.Logger().Error("Problem with logout", err)
-			}
-		}
-
-		clearAuthCookies(c)
-
-		return c.Redirect(http.StatusSeeOther, "/login")
-	}
-}
-
-// POST /signup formdata
-func Signup(client *supabase.Client) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		var creds Credentials
-		if err := c.Bind(&creds); err != nil {
-			return c.String(http.StatusBadRequest, "Invalid signup data")
-		}
-
-		session, err := client.Auth.Signup(types.SignupRequest{
-			Email:    creds.Email,
-			Password: creds.Password,
-			// Optionally,
-			// EmailRedirectTo: "https://yourapp.com/welcome", // for email confirmation redirect
-		})
-
-		if err != nil || session == nil {
-			return c.String(http.StatusBadRequest, "Signup failed: "+err.Error())
-		}
-
-		setAuthCookies(c, session.AccessToken, session.RefreshToken)
-		return c.Redirect(http.StatusSeeOther, "/home")
-	}
-}
+// 		email = bluemonday.StrictPolicy().Sanitize(email)
+// 		if email == "" {
+// 			return errors.New("Something went wrong sanitizing email string")
+// 		}
+// 	}
+// 	if email != "" {
+// 		pass = bluemonday.StrictPolicy().Sanitize(pass)
+// 		if pass == "" {
+// 			return errors.New("Something went wront sanitizing password string")
+// 		}
+// 	}
+// 	return nil
+// }

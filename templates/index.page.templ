@@ -1,149 +1,153 @@
 package templates
 
+import "share.dev/routes"
+
 templ IndexPage(csrfToken string) {
   @Base("Share.dev - Connect and Share") {
-  <!-- Hero Section -->
-    <section class="hero is-fullheight is-link">
-      <div class="hero-body">
-        <div class="container has-text-centered">
-          <h1 class="title is-size-1">Welcome to Share.dev 🌐</h1>
-          <h2 class="subtitle is-size-4">Connect. Share. Discover.</h2>
-          <div class="buttons is-centered mt-5">
-            <button class="button is-light is-medium" data-toggle="login-modal">Log In</button>
-            <button class="button is-primary is-medium" data-toggle="signup-modal">Sign Up</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Login Modal -->
-    <div class="modal" id="login-modal">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Log In</p>
-          <button class="delete" aria-label="close" data-toggle="login-modal"></button>
-        </header>
-        <section class="modal-card-body">
-          <form hx-post="/login"
-                hx-trigger="submit delay:500ms"
-                hx-target="#login-error-message"
-                hx-swap="innerHTML">
-            <input type="hidden" name="csrf_token" value={csrfToken}>
-            <div id="login-error-message" class="error-message has-text-danger mb-3"></div>
-            <div class="field">
-              <label class="label">Email</label>
-              <div class="control">
-                <input class="input" type="email" name="email" required autocomplete="username" />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Password</label>
-              <div class="control">
-                <input class="input" type="password" name="password" required autocomplete="current-password" />
-              </div>
-            </div>
-            <div class="has-text-right">
-              <button type="submit" class="button is-link">Log In</button>
-            </div>
-          </form>
-        </section>
-      </div>
-    </div>
-
-    <!-- Signup Modal -->
-    <div class="modal" id="signup-modal">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Sign Up</p>
-          <button class="delete" aria-label="close" data-toggle="signup-modal"></button>
-        </header>
-        <section class="modal-card-body">
-          <form id="signup-form"
-                hx-post="/signup"
-                hx-trigger="submit delay:500ms"
-                hx-target="#signup-error-message"
-                hx-swap="innerHTML">
-            <input type="hidden" name="csrf_token" value={csrfToken}>
-            <div id="signup-error-message" class="error-message has-text-danger mb-3"></div>
-            <div class="field">
-              <label class="label">Name</label>
-              <div class="control">
-                <input class="input" type="text" name="name" required />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Email</label>
-              <div class="control">
-                <input class="input" type="email" name="email" required autocomplete="username" />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Password</label>
-              <div class="control">
-                <input class="input" type="password" name="password" required autocomplete="new-password" />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Confirm Password</label>
-              <div class="control">
-                <input class="input" type="password" name="confirm_password" required autocomplete="new-password" />
-              </div>
-            </div>
-            <div class="has-text-right">
-              <button type="submit" class="button is-primary">Sign Up</button>
-            </div>
-          </form>
-        </section>
-      </div>
-    </div>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // Modal toggle logic
-        document.querySelectorAll("[data-toggle]").forEach(btn => {
-          btn.addEventListener("click", () => {
-            let target = document.getElementById(btn.dataset.toggle);
-            target.classList.toggle("is-active");
-            // clear error messages & reset forms when modals open
-            const errorMessages = target.querySelectorAll(".error-message");
-            errorMessages.forEach(em => em.textContent = "");
-            const forms = target.querySelectorAll("form");
-            forms.forEach(f => f.reset());
-          });
-        });
-
-        // Confirm password validation before signup submit
-        const signupForm = document.getElementById("signup-form");
-        if (signupForm) {
-          signupForm.addEventListener("submit", (e) => {
-            const pw = signupForm.querySelector('input[name="password"]');
-            const pw2 = signupForm.querySelector('input[name="confirm_password"]');
-            const errorBox = signupForm.querySelector(".error-message");
-            if (pw.value !== pw2.value) {
-              e.preventDefault();
-              errorBox.textContent = "Passwords do not match.";
-              pw.classList.add("is-danger");
-              pw2.classList.add("is-danger");
-              return false;
-            }
-            // Clear errors on success
-            pw.classList.remove("is-danger");
-            pw2.classList.remove("is-danger");
-            errorBox.textContent = "";
-          });
+    <style>
+        .tab-content {
+            display: none;
         }
 
-        // Clear error highlight on input change
-        document.querySelectorAll('input[type="password"], input[type="email"], input[type="text"]').forEach(input => {
-          input.addEventListener("input", () => {
-            input.classList.remove("is-danger");
-            const errorBox = input.closest("form").querySelector(".error-message");
-            if (errorBox) errorBox.textContent = "";
-          });
+        .tab-content.is-active {
+            display: block;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+
+    <!-- Hero -->
+    <section class="hero is-primary is-fullheight">
+        <div class="hero-head">
+            <nav class="navbar is-transparent">
+                <div class="container">
+                    <div class="navbar-brand">
+                        <a class="navbar-item">
+                            <i class="fas fa-code-branch mr-2"></i>
+                            <strong>Share.dev</strong>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns is-vcentered">
+                    <!-- Left side - Content -->
+                    <div class="column is-6">
+                        <h1 class="title is-1">Connect with the world</h1>
+                        <h2 class="subtitle is-4">Share your thoughts and discover new perspectives</h2>
+                    </div>
+
+                    <!-- Right side - Auth Form -->
+                    <div class="column is-6">
+                        <div class="box">
+                            <div class="tabs is-centered is-boxed">
+                                <ul>
+                                    <li class="is-active" data-target="login">
+                                        <a><span>Log In</span></a>
+                                    </li>
+                                    <li data-target="signup">
+                                        <a><span>Sign Up</span></a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Log In -->
+                            <div id="login" class="tab-content is-active">
+                                <form hx-post={ routes.Login } hx-target="#result">
+                                    <input type="hidden" name="csrf_token" value={csrfToken}>
+                                    <div class="field">
+                                        <input class="input" type="text" name="login" placeholder="Email or Username" required>
+                                    </div>
+                                    <div class="field">
+                                        <input class="input" type="password" name="password" placeholder="Password" required>
+                                    </div>
+                                    <div class="field">
+                                        <button class="button is-link is-fullwidth" type="submit">Log In</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Sign Up -->
+                            <div id="signup" class="tab-content">
+                                <form hx-post={ routes.Signup } hx-target="#result">
+                                    <input type="hidden" name="csrf_token" value={csrfToken}>
+                                    <div class="field">
+                                        <input class="input" type="email" name="email" placeholder="Email" required>
+                                    </div>
+                                    <div class="field">
+                                        <input class="input" type="password" name="password" placeholder="Password"
+                                               minlength="8" required>
+                                        <p class="help is-size-7">
+                                            Password must be at least 8 characters with uppercase, lowercase, number, and special character
+                                        </p>
+                                    </div>
+                                    <div class="field">
+                                        <input class="input" type="password" name="confirm_password"
+                                               placeholder="Confirm Password" minlength="8" required>
+                                    </div>
+                                    <div class="field">
+                                        <button class="button is-primary is-fullwidth" type="submit">Create Account</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div id="result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tabs li').forEach(tab => {
+            tab.addEventListener('click', function () {
+                const target = this.dataset.target;
+
+                document.querySelectorAll('.tabs li').forEach(t => t.classList.remove('is-active'));
+                document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('is-active'));
+
+                this.classList.add('is-active');
+                document.getElementById(target).classList.add('is-active');
+            });
         });
-      });
+
+        // Password confirmation validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const signupForm = document.querySelector('#signup form');
+            const password = signupForm.querySelector('input[name="password"]');
+            const confirmPassword = signupForm.querySelector('input[name="confirm_password"]');
+
+            function validatePasswordMatch() {
+                if (password.value && confirmPassword.value) {
+                    if (password.value !== confirmPassword.value) {
+                        confirmPassword.setCustomValidity('Passwords do not match');
+                        confirmPassword.classList.add('is-danger');
+                    } else {
+                        confirmPassword.setCustomValidity('');
+                        confirmPassword.classList.remove('is-danger');
+                    }
+                }
+            }
+
+            password.addEventListener('input', validatePasswordMatch);
+            confirmPassword.addEventListener('input', validatePasswordMatch);
+        });
+
+        // Loading states
+        document.body.addEventListener('htmx:beforeRequest', function (evt) {
+            evt.detail.elt.querySelector('button').classList.add('is-loading');
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function (evt) {
+            evt.detail.elt.querySelector('button').classList.remove('is-loading');
+        });
     </script>
   }
 }

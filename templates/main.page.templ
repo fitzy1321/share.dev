@@ -1,0 +1,12 @@
+package templates
+
+import "share.dev/routes"
+
+templ MainPage(email string) {
+  @Base("Dashboard") {
+    <h1 class="title">share.dev</h1>
+    <p>Welcome, <strong>{ email }</strong>!</p>
+    // <a class="button is-link" href={ routes.Index }>Home</a>
+    <a class="button is-danger" href={ routes.Logout }>Logout</a>
+  }
+}

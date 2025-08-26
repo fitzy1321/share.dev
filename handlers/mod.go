@@ -9,6 +9,11 @@ import (
 	"share.dev/templates"
 )
 
+const (
+	IndexRoute string = "/"
+	MainRoute  string = "/dash"
+)
+
 func getCSRFToken(c echo.Context) string {
 	csrfToken, ok := c.Get(middleware.DefaultCSRFConfig.ContextKey).(string)
 	if !ok {
@@ -20,23 +25,13 @@ func getCSRFToken(c echo.Context) string {
 func IndexPage(c echo.Context) error {
 	_, ok := c.Cookie(accessTokenCookie)
 	if ok == nil { // if there IS an accessTokenCookie, redirect to dashboard
-		c.Redirect(http.StatusPermanentRedirect, "/home")
+		c.Redirect(http.StatusPermanentRedirect, "/dash")
 	}
 	csrf := getCSRFToken(c)
 	return templates.IndexPage(csrf).Render(context.Background(), c.Response().Writer)
 }
 
-func LoginPage(c echo.Context) error {
-	csrfToken := getCSRFToken(c)
-	return templates.LoginPage(csrfToken).Render(context.Background(), c.Response().Writer)
-}
-
-func SignupPage(c echo.Context) error {
-	csrfToken := getCSRFToken(c)
-	return templates.Signup(csrfToken).Render(context.Background(), c.Response().Writer)
-}
-
-func Home(c echo.Context) error {
+func MainPage(c echo.Context) error {
 	userEmail, _ := c.Get("user_email").(string)
-	return templates.Home(userEmail).Render(context.Background(), c.Response().Writer)
+	return templates.MainPage(userEmail).Render(context.Background(), c.Response().Writer)
 }
