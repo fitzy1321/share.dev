@@ -1,6 +1,17 @@
+# Custom
+justfile
+**/*.md
+**/*.yaml
+**/*.yml
+/supabase
+.air.toml
+LICENSE
+
+# Git
 **/.git
 **/.github
 **/.gitignore
+
 # flyctl launch added from .gitignore
 **/tmp
 **/.env*
@@ -17,3 +28,9 @@ supabase/**/.env.keys
 supabase/**/.env.local
 supabase/**/.env.*.local
 fly.toml
+
+# Docker
+docker-compose.*
+*ockerfile*
+.dockerignore
+.docker
