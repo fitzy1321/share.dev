@@ -6,6 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"share.dev/routes"
 	"share.dev/templates"
 )
 
@@ -25,7 +26,7 @@ func getCSRFToken(c echo.Context) string {
 func IndexPage(c echo.Context) error {
 	_, ok := c.Cookie(accessTokenCookie)
 	if ok == nil { // if there IS an accessTokenCookie, redirect to dashboard
-		c.Redirect(http.StatusPermanentRedirect, "/dash")
+		c.Redirect(http.StatusPermanentRedirect, routes.Main)
 	}
 	csrf := getCSRFToken(c)
 	return templates.IndexPage(csrf).Render(context.Background(), c.Response().Writer)

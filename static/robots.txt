@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Block API routes
+Disallow: /api/
+
+# Allow static assets
+Allow: /static/
+
+# Sitemap location
+Sitemap: https://share-dev.fly.dev/sitemap.xml
