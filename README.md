@@ -8,18 +8,19 @@ Built using Golang + HTMX!
 
 - Golang v1.24.6
 - Echo API Framework
-- a-b/Templ package
-- HTMX - cdn script
-- Bulma CSS - cdn to minify css
-- Supabase - supabase-go package
+- [a-h/Templ](https://github.com/a-h/templ) package
+- [HTMX](https://github.com/bigskysoftware/htmx)
+- [Bulma CSS](https://github.com/jgthms/bulma)
+- Supabase - [supabase-go](https://github.com/supabase-community/supabase-go) package
 - [Air (hot reloading)](https://github.com/air-verse/air)
 - Fly.io hosting
 
 ## Current Scope
 
-- [ ] Landing Page
-- [ ] Login / Signup pages
+- [x] Landing Page
+- [x] Login / Signup Auth Actions
   - [ ] Supabase Auth
+  - [ ] Email Confirmation
 - [ ] Scalable User Sessions
 - [ ] "Feed" Page
   - [ ] Post Text
