@@ -1,11 +1,10 @@
 package handlers
 
 import (
-	"fmt"
-	"html"
 	"net/http"
 	"time"
 
+	"github.com/go-playground/validator"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/gotrue-go/types"
@@ -20,9 +19,11 @@ const (
 )
 
 type Credentials struct {
-	Email    string `form:"email"`
-	Password string `form:"password"`
+	Email    string `form:"email" validate:"required,email"`
+	Password string `form:"password" validate:"required,min=8"`
 }
+
+var validate *validator.Validate = validator.New()
 
 // Add this func to your routes
 func AuthRequired(next echo.HandlerFunc) echo.HandlerFunc {
@@ -55,61 +56,39 @@ func AuthRequired(next echo.HandlerFunc) echo.HandlerFunc {
 
 //* Auth Related Routes
 
-// POST /login formdata
 func Login(client *supabase.Client) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// Only Htmx requests allowed
-		if c.Request().Header.Get("HX-Request") != "true" {
-			return c.JSON(http.StatusBadRequest, "Invalid request")
+		creds := new(Credentials)
+		if err := c.Bind(creds); err != nil {
+			return c.String(http.StatusBadRequest, "Invalid input")
 		}
-
-		// Get form data manually since you're using form fields "login" and "password"
-		loginField := c.FormValue("login") // This handles email or username
-		password := c.FormValue("password")
-
 		// Validate input
-		if loginField == "" || password == "" {
-			errorHTML := `
-				<div class="notification is-danger is-light">
-					<button class="delete" onclick="this.parentElement.style.display='none'"></button>
-					<strong>Validation Error:</strong> Email/username and password are required.
-				</div>
-			`
-			return c.HTML(400, errorHTML)
+		if creds.Email == "" || creds.Password == "" {
+			return echo.NewHTTPError(http.StatusBadRequest, "Email and Password are required.")
 		}
+
+		if err := validate.Struct(creds); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Data Vadliation Error:"+err.Error())
+		}
+
+		// TODO: more validation and sanitization needed
 
 		// Attempt authentication with Supabase
-		session, err := client.Auth.SignInWithEmailPassword(loginField, password)
+		session, err := client.Auth.SignInWithEmailPassword(creds.Email, creds.Password)
 		if err != nil {
-			errorHTML := fmt.Sprintf(`
-				<div class="notification is-danger is-light">
-					<button class="delete" onclick="this.parentElement.style.display='none'"></button>
-					<strong>Login Failed:</strong> %s
-				</div>
-			`, html.EscapeString(err.Error()))
-			return c.HTML(401, errorHTML)
+			return echo.NewHTTPError(http.StatusConflict, "Problem with supabase login: "+err.Error())
 		}
 
 		if session == nil {
-			errorHTML := `
-				<div class="notification is-danger is-light">
-					<button class="delete" onclick="this.parentElement.style.display='none'"></button>
-					<strong>Login Failed:</strong> Authentication session could not be created.
-				</div>
-			`
-			return c.HTML(401, errorHTML)
+			return echo.NewHTTPError(http.StatusUnauthorized, "Authentication session could not be created")
 		}
 
 		// Set authentication cookies
 		setAuthCookies(c, session.AccessToken, session.RefreshToken)
-
-		// SUCCESS: Full page redirect using HTMX
-		c.Response().Header().Set("HX-Redirect", routes.MainPage)
-		return c.NoContent(200)
+		return c.Redirect(http.StatusOK, routes.MainPage)
 	}
 }
 
-// POST /logout ~ calls Supabase Auth.Logout and clears auth cookies
 func Logout(client *supabase.Client) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		accessCookie, err := c.Cookie(accessTokenCookie)
@@ -129,16 +108,21 @@ func Logout(client *supabase.Client) echo.HandlerFunc {
 // POST /signup formdata
 func Signup(client *supabase.Client) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// Only Htmx requests allowed
-
-		if c.Request().Header.Get("HX-Request") != "true" {
-			return c.JSON(http.StatusBadRequest, "Invalid request")
+		creds := new(Credentials)
+		if err := c.Bind(creds); err != nil {
+			return c.String(http.StatusBadRequest, "Invalid input")
+		}
+		// Validate input
+		if creds.Email == "" || creds.Password == "" {
+			return echo.NewHTTPError(http.StatusBadRequest, "Email and Password are required.")
 		}
 
-		var creds Credentials
-		if err := c.Bind(&creds); err != nil {
-			return c.String(http.StatusBadRequest, "Invalid signup data")
+		if err := validate.Struct(creds); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Data Vadliation Error:"+err.Error())
 		}
+
+		// TODO: more validation and sanitization needed
+
 		cc, ok := c.(internal.CustomContext)
 		if !ok {
 			return echo.NewHTTPError(500, "an error occurred when casting the echo.Context to the CustomContext object, in Signup func.")
@@ -167,6 +151,12 @@ func Verify(client *supabase.Client) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		token := c.QueryParam("token")
 		email := c.QueryParam("email")
+		if err := validate.Var(token, "required"); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Something wront with token:"+err.Error())
+		}
+		if err := validate.Var(email, "required,email"); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Somethint wrong with the email:"+err.Error())
+		}
 
 		some, err := client.Auth.VerifyForUser(types.VerifyForUserRequest{
 			Type:  types.VerificationTypeSignup,

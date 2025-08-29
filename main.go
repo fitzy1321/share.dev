@@ -24,8 +24,6 @@ func main() {
 
 	e := echo.New()
 
-	e.HTTPErrorHandler = handlers.CustomErrorHandler
-
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cc := &internal.CustomContext{Context: c, Env: env}
@@ -37,8 +35,10 @@ func main() {
 
 	// Security and CSRF middleware
 	// e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20)))
-	e.Use(middleware.CSRF())
 	e.Use(middleware.Secure())
+	cfg := middleware.DefaultCSRFConfig
+	cfg.TokenLookup = "form:_csrf"
+	e.Use(middleware.CSRFWithConfig(cfg))
 
 	e.Static(routes.Static, "static")
 
