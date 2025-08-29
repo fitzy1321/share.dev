@@ -1,10 +1,21 @@
 package routes
 
+// Full Pages
 const (
-	Index  = "/"
-	Login  = "/login"
-	Logout = "/logout"
-	Main   = "/dash"
-	Signup = "/dash"
+	IndexPage      = "/"
+	MainPage       = "/dash"
+	CheckEmailPage = "/checkemail"
+)
+
+// Auth
+const (
+	ConfirmEmail = "/confirm"
+	Login        = "/login"
+	Logout       = "/logout"
+	Signup       = "/dash"
+)
+
+// API + Other
+const (
 	Static = "/static"
 )

@@ -103,7 +103,7 @@ func Login(client *supabase.Client) echo.HandlerFunc {
 		setAuthCookies(c, session.AccessToken, session.RefreshToken)
 
 		// SUCCESS: Full page redirect using HTMX
-		c.Response().Header().Set("HX-Redirect", routes.Main)
+		c.Response().Header().Set("HX-Redirect", routes.MainPage)
 		return c.NoContent(200)
 	}
 }
@@ -121,7 +121,7 @@ func Logout(client *supabase.Client) echo.HandlerFunc {
 
 		clearAuthCookies(c)
 
-		return c.Redirect(http.StatusSeeOther, routes.Login)
+		return c.Redirect(http.StatusSeeOther, routes.IndexPage)
 	}
 }
 
@@ -153,8 +153,15 @@ func Signup(client *supabase.Client) echo.HandlerFunc {
 		fmt.Println("Type of token returned from Supabase:", signupResp.TokenType)
 
 		setAuthCookies(c, signupResp.AccessToken, signupResp.RefreshToken)
-		return c.Redirect(http.StatusSeeOther, MainRoute)
+		return c.Redirect(http.StatusSeeOther, routes.MainPage)
 
+	}
+}
+
+func ConfirmEmail(client *supabase.Client) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// need todo some parsing from query params and send code to supabase, I think?
+		return c.Redirect(http.StatusOK, routes.MainPage)
 	}
 }
 

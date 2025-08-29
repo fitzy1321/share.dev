@@ -11,6 +11,9 @@ LICENSE
 temp
 tmp
 
+# Go Templ files
+**/*_templ.go
+
 # Git
 **/.git
 **/.github

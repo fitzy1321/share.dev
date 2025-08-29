@@ -72,14 +72,18 @@ func main() {
 	e.Static(routes.Static, "static")
 
 	// Routes
-	e.GET(routes.Index, handlers.IndexPage)
+	// Pages
+	e.GET(routes.IndexPage, handlers.IndexPage)
+	e.GET(routes.CheckEmailPage, handlers.CheckEmailPage)
+	e.GET(routes.MainPage, handlers.MainPage, handlers.AuthRequired)
 
+	// Auth
 	e.POST(routes.Login, handlers.Login(client))
 	e.GET(routes.Logout, handlers.Logout(client))
 	e.POST(routes.Signup, handlers.Signup(client))
+	e.GET(routes.ConfirmEmail, handlers.ConfirmEmail(client))
 
-	e.GET(routes.Main, handlers.MainPage, handlers.AuthRequired)
-
+	// API / Data routes
 	g := e.Group("/api", handlers.AuthRequired)
 	g.GET("/feed", api.Feed)
 

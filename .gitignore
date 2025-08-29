@@ -2,3 +2,4 @@ tmp
 .env
 .env.local
 **/.DS_Store
+**/*_templ.go
