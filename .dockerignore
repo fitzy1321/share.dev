@@ -3,9 +3,13 @@ justfile
 **/*.md
 **/*.yaml
 **/*.yml
-/supabase
+.vscode
 .air.toml
 LICENSE
+.temp
+.tmp
+temp
+tmp
 
 # Git
 **/.git
@@ -20,8 +24,9 @@ LICENSE
 
 # flyctl launch added from supabase/.gitignore
 # Supabase
-supabase/**/.branches
-supabase/**/.temp
+supabase
+# supabase/**/.branches
+# supabase/**/.temp
 
 # dotenvx
 supabase/**/.env.keys
