@@ -25,7 +25,7 @@ func loadEnvFile() error {
 		envFile = ".env.local"
 	case "test":
 		envFile = ".env.test"
-	case "production":
+	case "production", "prod":
 		// production is fly.io (for now)
 		// no .env file, just leave
 		return nil
