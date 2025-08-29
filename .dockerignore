@@ -19,7 +19,6 @@ tmp
 # flyctl launch added from .gitignore
 **/tmp
 **/.env*
-**/.env.local
 **/**/.DS_Store
 
 # flyctl launch added from supabase/.gitignore
