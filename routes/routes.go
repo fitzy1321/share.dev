@@ -9,10 +9,10 @@ const (
 
 // Auth
 const (
-	ConfirmEmail = "/confirm"
-	Login        = "/login"
-	Logout       = "/logout"
-	Signup       = "/dash"
+	Verify = "/verify"
+	Login  = "/login"
+	Logout = "/logout"
+	Signup = "/dash"
 )
 
 // API + Other

@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/supabase-community/gotrue-go/types"
 	"github.com/supabase-community/supabase-go"
+	"share.dev/internal"
 	"share.dev/routes"
 )
 
@@ -138,7 +139,10 @@ func Signup(client *supabase.Client) echo.HandlerFunc {
 		if err := c.Bind(&creds); err != nil {
 			return c.String(http.StatusBadRequest, "Invalid signup data")
 		}
-
+		cc, ok := c.(internal.CustomContext)
+		if !ok {
+			return echo.NewHTTPError(500, "an error occurred when casting the echo.Context to the CustomContext object, in Signup func.")
+		}
 		signupResp, err := client.Auth.Signup(types.SignupRequest{
 			Email:    creds.Email,
 			Password: creds.Password,
@@ -147,20 +151,34 @@ func Signup(client *supabase.Client) echo.HandlerFunc {
 		})
 
 		if err != nil || signupResp == nil {
-			return c.String(http.StatusBadRequest, "Signup failed: "+err.Error())
+			return echo.NewHTTPError(http.StatusConflict, "Signup failed: "+err.Error())
 		}
 
-		fmt.Println("Type of token returned from Supabase:", signupResp.TokenType)
+		if cc.IsDev() {
+			setAuthCookies(c, signupResp.AccessToken, signupResp.RefreshToken)
+			return c.Redirect(http.StatusSeeOther, routes.MainPage)
+		}
 
-		setAuthCookies(c, signupResp.AccessToken, signupResp.RefreshToken)
-		return c.Redirect(http.StatusSeeOther, routes.MainPage)
-
+		return c.Redirect(http.StatusOK, routes.CheckEmailPage)
 	}
 }
 
-func ConfirmEmail(client *supabase.Client) echo.HandlerFunc {
+func Verify(client *supabase.Client) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// need todo some parsing from query params and send code to supabase, I think?
+		token := c.QueryParam("token")
+		email := c.QueryParam("email")
+
+		some, err := client.Auth.VerifyForUser(types.VerifyForUserRequest{
+			Type:  types.VerificationTypeSignup,
+			Token: token,
+			Email: email,
+		})
+
+		if err != nil {
+			return echo.NewHTTPError(http.StatusConflict, "Verify failed: "+err.Error())
+		}
+
+		setAuthCookies(c, some.AccessToken, some.RefreshToken)
 		return c.Redirect(http.StatusOK, routes.MainPage)
 	}
 }
