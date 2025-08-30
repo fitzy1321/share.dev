@@ -50,6 +50,5 @@ air # live reload go files, templates, and html
 ## References
 
 - Primeagon talk on golang and htmx: <https://www.youtube.com/watch?v=x7v6SNIgJpE>
-- Supabase-go package: <https://github.com/supabase-community/supabase-go>
 - Local Development with Supabase <https://supabase.com/docs/guides/local-development>
 - Fly.io for hosting and deployments <https://fly.io/docs/>
