@@ -6,7 +6,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"share.dev/handlers"
-	"share.dev/handlers/api"
 	"share.dev/internal"
 	"share.dev/routes"
 )
@@ -55,8 +54,8 @@ func main() {
 	e.GET(routes.Verify, handlers.Verify(client))
 
 	// API / Data routes
-	g := e.Group("/api", handlers.AuthRequired)
-	g.GET("/feed", api.Feed)
+	// g := e.Group("/api", handlers.AuthRequired)
+	// g.GET("/feed", api.Feed)
 
 	// Start Server, and log results
 	e.Logger.Fatal(e.Start(":8080"))

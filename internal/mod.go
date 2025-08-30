@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"errors"
 	"log"
 	"os"
 
@@ -51,10 +52,10 @@ func LoadEnvFile() (string, error) {
 		// no .env file, just leave
 		return env, nil
 	default:
-		envFile = ".env"
+		return "", errors.New("unknown $GO_ENV key found")
 	}
-	err := godotenv.Load(envFile)
-	return env, err
+
+	return env, godotenv.Load(envFile)
 }
 
 // NewClient creates and returns a new Supabase client using environment variables SUPABASE_URL and SUPABASE_KEY.
