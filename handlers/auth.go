@@ -85,7 +85,7 @@ func Login(client *supabase.Client) echo.HandlerFunc {
 
 		// Set authentication cookies
 		setAuthCookies(c, session.AccessToken, session.RefreshToken)
-		return c.Redirect(http.StatusOK, routes.MainPage)
+		return c.Redirect(http.StatusFound, routes.MainPage)
 	}
 }
 
@@ -143,7 +143,7 @@ func Signup(client *supabase.Client) echo.HandlerFunc {
 			return c.Redirect(http.StatusSeeOther, routes.MainPage)
 		}
 
-		return c.Redirect(http.StatusOK, routes.CheckEmailPage)
+		return c.Redirect(http.StatusFound, routes.CheckEmailPage)
 	}
 }
 
@@ -169,7 +169,7 @@ func Verify(client *supabase.Client) echo.HandlerFunc {
 		}
 
 		setAuthCookies(c, some.AccessToken, some.RefreshToken)
-		return c.Redirect(http.StatusOK, routes.MainPage)
+		return c.Redirect(http.StatusFound, routes.MainPage)
 	}
 }
 
