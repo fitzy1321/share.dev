@@ -11,7 +11,7 @@ LICENSE
 temp
 tmp
 
-# Go Templ files
+# Generated Go Templ files (dockerfile copies .templ files and generate in docker build)
 **/*_templ.go
 
 # Git
