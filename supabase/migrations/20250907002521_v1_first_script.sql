@@ -10,11 +10,15 @@ create table if not exists rbac.roles (
   role text UNIQUE NOT NULL
 );
 comment on table rbac.roles is 'RBAC Roles for Application.';
--- Insert Default Roles
+end $$;
+
+do $$
+begin
 insert into rbac.roles (role) values
   ('user'),
   ('admin'),
-  ('super');
+  ('super')
+on conflict do nothing;
 end $$;
 
 -- Create Permission Enum

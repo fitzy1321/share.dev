@@ -1,8 +1,14 @@
 default:
     just --list
 
-db_rest:
+db_local_push:
+    supabase db push --local
+
+db_reset:
     supbase db reset
+
+db_push:
+    supbase db push
 
 full_reset: db_reset
     supabase stop
@@ -14,6 +20,3 @@ start:
 
 stop:
     supabase stop
-
-templ:
-    go tool templ generate
