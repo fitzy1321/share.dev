@@ -1,8 +1,13 @@
 default:
     just --list
 
-local_db_migrations:
+db_rest:
     supbase db reset
+
+full_reset: db_reset
+    supabase stop
+    rm -rf supabae/.temp
+    supabase start
 
 start:
     supbase start
