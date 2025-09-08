@@ -9,10 +9,15 @@ const (
 
 // Auth
 const (
-	Verify = "/verify"
-	Login  = "/login"
-	Logout = "/logout"
-	Signup = "/dash"
+	VerifyGet  = "/verify"
+	LoginPost  = "/login"
+	LogoutGet  = "/logout"
+	SignupPost = "/dash"
+)
+
+// Auth Components
+const (
+	AuthFormGet = "/authform"
 )
 
 // API + Other

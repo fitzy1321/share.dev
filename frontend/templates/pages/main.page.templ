@@ -1,0 +1,15 @@
+package pages
+
+import (
+	"share.dev/routes"
+	"share.dev/templates/layouts"
+)
+
+templ MainPage(email string) {
+	@layouts.Base("Dashboard") {
+		<h1 class="title">share.dev</h1>
+		<p>Welcome, <strong>{ email }</strong>!</p>
+		// <a class="button is-link" href={ routes.Index }>Home</a>
+		<a class="button is-danger" href={ routes.LogoutGet }>Logout</a>
+	}
+}

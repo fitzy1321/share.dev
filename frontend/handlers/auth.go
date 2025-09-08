@@ -30,22 +30,22 @@ func AuthRequired(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		cookie, err := c.Cookie(accessTokenCookie)
 		if err != nil {
-			return c.Redirect(http.StatusSeeOther, routes.Login)
+			return c.Redirect(http.StatusSeeOther, routes.LoginPost)
 		}
 
 		token, _, err := new(jwt.Parser).ParseUnverified(cookie.Value, jwt.MapClaims{})
 		if err != nil {
-			return c.Redirect(http.StatusSeeOther, routes.Login)
+			return c.Redirect(http.StatusSeeOther, routes.LoginPost)
 		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
-			return c.Redirect(http.StatusSeeOther, routes.Login)
+			return c.Redirect(http.StatusSeeOther, routes.LoginPost)
 		}
 
 		email, _ := claims["email"].(string)
 		if email == "" {
-			return c.Redirect(http.StatusSeeOther, routes.Login)
+			return c.Redirect(http.StatusSeeOther, routes.LoginPost)
 		}
 
 		c.Set("user_email", email)

@@ -19,7 +19,7 @@ Built using Golang + HTMX!
 
 - [x] Landing Page
 - [x] Login / Signup Auth Actions
-  - [ ] Supabase Auth
+  - [x] Supabase Auth
   - [ ] Email Confirmation
 - [ ] Scalable User Sessions
 - [ ] "Feed" Page

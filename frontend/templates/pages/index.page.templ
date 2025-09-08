@@ -1,0 +1,59 @@
+package pages
+
+import (
+	"share.dev/templates/components"
+	"share.dev/templates/layouts"
+)
+
+templ IndexPage(csrfToken string) {
+	@layouts.Base("Share.dev - Connect and Share") {
+		<style>
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.is-active {
+        display: block;
+    }
+
+    .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+</style>
+		<!-- Hero -->
+		<section class="hero is-primary is-fullheight">
+			<div class="hero-head">
+				<nav class="navbar is-transparent">
+					<div class="container">
+						<div class="navbar-brand">
+							<a class="navbar-item">
+								<i class="fas fa-code-branch mr-2"></i>
+								<strong>Share.dev</strong>
+							</a>
+						</div>
+					</div>
+				</nav>
+			</div>
+			<div class="hero-body">
+				<div class="container">
+					<div class="columns is-vcentered">
+						<!-- Left side - Content -->
+						<div id="column-1" class="column is-6">
+							<h1 class="title is-1">Connect with the world</h1>
+							<h2 class="subtitle is-4">Share your thoughts and discover new perspectives</h2>
+							// <button
+							// 	id="auth-form-btn"
+							// 	hx-on::afterRequest="console.log(event)"
+							// 	class="button"
+							// 	hx-get={ routes.AuthFormGet }
+							// >Login</button>
+						</div>
+						<!-- Right side - Auth Form -->
+						// <div id="column-2" class="hidden"></div>
+						@components.AuthForm(csrfToken)
+					</div>
+				</div>
+			</div>
+		</section>
+	}
+}
