@@ -7,7 +7,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
-	"github.com/supabase-community/gotrue-go/types"
+	"github.com/supabase-community/auth-go/types"
 	"github.com/supabase-community/supabase-go"
 	"share.dev/internal"
 	"share.dev/routes"
