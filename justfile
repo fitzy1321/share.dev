@@ -20,3 +20,9 @@ start:
 
 stop:
     supabase stop
+
+fly-deploy:
+    flyctl deploy
+
+templ:
+    go tool templ generate

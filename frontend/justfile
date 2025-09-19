@@ -1,8 +1,0 @@
-default:
-    just --list
-
-fly-deploy:
-    flyctl deploy
-
-templ:
-    go tool templ generate
