@@ -1,16 +1,16 @@
 default:
     just --list
 
-db_local_push:
+db-local-push:
     supabase db push --local
 
-db_reset:
+db-reset:
     supbase db reset
 
-db_push:
+db-push:
     supbase db push
 
-full_reset: db_reset
+full-reset: db_reset
     supabase stop
     rm -rf supabae/.temp
     supabase start
@@ -26,3 +26,7 @@ fly-deploy:
 
 templ:
     go tool templ generate
+
+update-deps:
+    go get -u all
+    go mod tidy
