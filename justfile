@@ -10,13 +10,13 @@ db-reset:
 db-push:
     supbase db push
 
-full-reset: db_reset
+full-reset: db-reset
     supabase stop
     rm -rf supabae/.temp
     supabase start
 
 start:
-    supbase start
+    supabase start
 
 stop:
     supabase stop
